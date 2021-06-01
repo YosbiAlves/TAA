@@ -1,0 +1,36 @@
+ 
+tree
+
+insert 23 34 5 7 4
+
+remove 4 234
+
+display
+
+clear
+
+postorder
+
+insert 1 2 3 4 6 7 8 9 0 67 5 3 44 5 3 34 45 435 56 45 645 
+
+inorder
+
+min
+
+max
+
+preorder
+
+remove 23 54 6 3 2 2 1 5 2 
+
+inorder
+
+search 1 2 4 56 6 4 3 34 435
+
+clear
+
+min 
+
+max 
+
+inorder
