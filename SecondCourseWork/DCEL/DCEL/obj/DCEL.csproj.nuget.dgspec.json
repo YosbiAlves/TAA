@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/yosbi/Workspace/DCEL/DCEL/DCEL.csproj": {}
+    "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/DCEL.csproj": {}
   },
   "projects": {
-    "/Users/yosbi/Workspace/DCEL/DCEL/DCEL.csproj": {
+    "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/DCEL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/yosbi/Workspace/DCEL/DCEL/DCEL.csproj",
+        "projectUniqueName": "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/DCEL.csproj",
         "projectName": "DCEL",
-        "projectPath": "/Users/yosbi/Workspace/DCEL/DCEL/DCEL.csproj",
+        "projectPath": "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/DCEL.csproj",
         "packagesPath": "/Users/yosbi/.nuget/packages/",
-        "outputPath": "/Users/yosbi/Workspace/DCEL/DCEL/obj/",
+        "outputPath": "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/yosbi/.config/NuGet/NuGet.Config"

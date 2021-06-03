@@ -6,10 +6,43 @@
 
 
         <div class="row">
-            <div class="col-8">
-                <div id="canvasHolder" style="position: fixed; background-color: magenta; width:@M; height:@M">
-                    <BECanvas Width="@M" Height="@M" @ref="_canvasReference"></BECanvas>
-                </div>
+            <div class="col-8" style="padding:0px!important; overflow: scroll;">
+             
+                    <div id="canvasHolder" style="position: fixed; background-color: white;">
+                        <div class="row">
+                            <div class="col" style="padding:0px!important;margin-top:20px">
+                                <div class="row align-items-start" style="height: @( (M/3)+"px"); margin:5px">
+                                    <div class="col" style="padding:0px">
+                                        <h6 style="text-align:right">0</h6>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center" style="height: @( (M/3)+"px"); margin:5px">
+                                    <div class="col" style="padding:0px">
+                                        <h6 style="text-align:right">@(M/2)</h6>
+                                    </div>
+                                </div>
+                                <div class="row align-items-end" style="height: @( (M/3)+"px"); margin:5px">
+                                    <div class="col" style="padding:0px">
+                                        <h6 style="text-align:right">@M</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-11" style="padding:0px!important;width:@(M + "px")">
+                                <div class="row" style="margin:0px!important;width:@(M + "px")">
+                                    <div class="col" style="padding:0px!important"><h6 style="text-align:left">0</h6></div>
+                                    <div class="col" style="padding:0px!important"><h6 style="text-align:center">@(M/2)</h6></div>
+                                    <div class="col" style="padding:0px!important"> <h6 style="text-align:right">@M</h6></div>
+                                </div>
+                                <div class="row" style='margin: 0px !important; background-color: magenta; width: @(M + "px"); height: @(M+"px")'>
+                                    <BECanvas Width="600" Height="600" @ref="_canvasReference"></BECanvas>
+                                </div>
+                            </div>
+
+                        </div>   
+
+                    </div>
+                
+                
             </div>
             <div class="col">
 
@@ -40,7 +73,7 @@
                         <div class="row form-group">
                             <div class="col-5 center-text"><h6>Value of M:</h6></div>
                             <div class="col-7">
-                                <input type="number" @bind-value="@M" />
+                                <input type="number" @bind-value="@tempM" />
                             </div>
                         </div>
                         <div class="row form-group">
@@ -64,6 +97,7 @@
 @code{
     private Models.Field Field = new Models.Field();
 
+    private int tempM = 600;
     private int M = 600;
     private double pointX = 0;
     private double pointY = 0;
@@ -82,13 +116,15 @@
 
     private void ResizeClick()
     {
+        M = tempM;
         JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         //StateHasChanged();
     }
 
     private void AddOnePointClick()
     {
-        AddOnePoint(pointX, pointY);
+        if (pointX < M && pointY < M )
+            AddOnePoint(pointX, pointY);
     }
 
     private DateTime LastRender;

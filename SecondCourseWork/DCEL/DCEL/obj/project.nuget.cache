@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lU6irgPb9aAXLSlBECbGAgaXuPzUK3DXG6X+cyUH/cYtrl681lGvrxvlgj07whVTD8XYIU6W0Oz/qtHjy+024A==",
+  "dgSpecHash": "FFmo1ErVK8Tj5sloDwxiWX6Zq+qujcROCqPwi32ey7SNlQpDviIWh1rjo/kpEoBfKxCrKRZO+SqdBRgkm3hVDw==",
   "success": true,
-  "projectFilePath": "/Users/yosbi/Workspace/DCEL/DCEL/DCEL.csproj",
+  "projectFilePath": "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/DCEL.csproj",
   "expectedPackageFiles": [
     "/Users/yosbi/.nuget/packages/blazor.extensions.canvas/1.1.1/blazor.extensions.canvas.1.1.1.nupkg.sha512",
     "/Users/yosbi/.nuget/packages/microsoft.aspnetcore.authorization/5.0.6/microsoft.aspnetcore.authorization.5.0.6.nupkg.sha512",

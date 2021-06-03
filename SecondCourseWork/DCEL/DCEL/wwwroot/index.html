@@ -62,7 +62,8 @@
 
             theInstance.invokeMethodAsync('RenderInBlazor');
 
-            const canvas = document.getElementById('canvasHolder')
+            var holder = document.getElementById('canvasHolder');
+            var canvas = holder.querySelector('canvas');
             canvas.addEventListener('mousedown', function (e) {
                 getCursorPosition(canvas, e)
             })
