@@ -25,12 +25,17 @@
     <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
     <script>
 
+        function sleepFor(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
         function getCursorPosition(canvas, event) {
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             console.log("x: " + x + " y: " + y);
             theInstance.invokeMethodAsync("AddOnePoint", x, y);
+            theInstance.invokeMethodAsync("UpdateTable");
         }
 
         function resizeCanvasOnDemand(M) {
@@ -41,6 +46,9 @@
                 canvas.height = M;//window.innerHeight;
                 console.log("canvas.w: " + canvas.width + " canvas.h: " + canvas.height)
                 theInstance.invokeMethodAsync('ResizeInBlazor', canvas.width, canvas.height);
+
+                this.sleepFor(1000);
+
                 theInstance.invokeMethodAsync('RenderInBlazor');
             }
         }
@@ -56,18 +64,21 @@
         }*/
 
         window.initRenderJS = (instance) => {
-            window.theInstance = instance;
-            //window.addEventListener("resize", resizeCanvasToFitWindow);
-            //resizeCanvasToFitWindow();
+            console.log("ignited window");
+            if (window.theInstance == null) {
+                window.theInstance = instance;
 
-            theInstance.invokeMethodAsync('RenderInBlazor');
+                theInstance.invokeMethodAsync('RenderInBlazor');
 
-            var holder = document.getElementById('canvasHolder');
-            var canvas = holder.querySelector('canvas');
-            canvas.addEventListener('mousedown', function (e) {
-                getCursorPosition(canvas, e)
-            })
-        };</script>
+                var holder = document.getElementById('canvasHolder');
+                var canvas = holder.querySelector('canvas');
+
+                canvas.addEventListener('mousedown', function (e) {
+                    getCursorPosition(canvas, e)
+                })
+            }
+        };
+    </script>
 </body>
 
 </html>

@@ -13,98 +13,112 @@ namespace DCEL.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 1 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 2 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using System.Net.Http.Json;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 3 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 4 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 5 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 6 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 7 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 8 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 9 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using DCEL;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 10 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using DCEL.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "/Users/yosbi/Workspace/DCEL/DCEL/_Imports.razor"
+#line 11 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/_Imports.razor"
 using Blazor.Extensions.Canvas;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "/Users/yosbi/Workspace/DCEL/DCEL/Pages/Index.razor"
+#line 3 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
 using Blazor.Extensions;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "/Users/yosbi/Workspace/DCEL/DCEL/Pages/Index.razor"
+#line 4 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
 using Blazor.Extensions.Canvas.Canvas2D;
 
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 5 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+using System.Threading;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 6 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+using System.Timers;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/")]
-    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase
+    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase, IDisposable
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -112,47 +126,97 @@ using Blazor.Extensions.Canvas.Canvas2D;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 64 "/Users/yosbi/Workspace/DCEL/DCEL/Pages/Index.razor"
+#line 197 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
       
     private Models.Field Field = new Models.Field();
 
+    private int tempM = 600;
     private int M = 600;
     private double pointX = 0;
     private double pointY = 0;
 
     private Canvas2DContext ctx;
     protected BECanvasComponent _canvasReference;
+    private System.Timers.Timer timer;
+    private bool isStateChanged = false;
 
-
+    // Kind of constructor
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this.ctx = await _canvasReference.CreateCanvas2DAsync();
         await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
         await JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         await base.OnInitializedAsync();
+
+        /*timer = new System.Timers.Timer();
+        timer.Interval = 2000; // each second
+        timer.Elapsed += timer_elapsed;
+        timer.Start();*/
+
     }
+
+
+
+    private void timer_elapsed(object sender, ElapsedEventArgs e)
+    {
+        //JsRuntime.InvokeVoidAsync("console.log", "added one point");
+        /*Console.WriteLine("tick");
+        if (isStateChanged)
+        {
+            isStateChanged = false;
+            InvokeAsync(() => { StateHasChanged(); });
+        }*/
+
+    }
+
+    // Destructor
+    void IDisposable.Dispose()
+    {
+        //timer.Stop();
+        //timer.Elapsed -= timer_elapsed;
+    }
+
+
 
     private void ResizeClick()
     {
+        if (tempM > 1500) tempM = 1500;
+        if (tempM < 1) tempM = 1;
+        M = tempM;
         JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
+        Field = new Models.Field();
         //StateHasChanged();
     }
 
     private void AddOnePointClick()
     {
-        AddOnePoint(pointX, pointY);
+        if (pointX < M && pointY < M)
+            AddOnePoint(pointX, pointY);
+
+        pointX = 0;
+        pointY = 0;
     }
 
     private DateTime LastRender;
 
     [JSInvokable]
-    public void ResizeInBlazor(double width, double height) {
-        Console.WriteLine("M: " + M.ToString());
+    public void UpdateTable()
+    {
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void ResizeInBlazor(double width, double height)
+    {
+        Console.WriteLine("ResizeInBlazor M: " + M.ToString());
         Field.Resize(M, M);
     }
 
     [JSInvokable]
-    public void AddOnePoint(double x, double y) {
+    public void AddOnePoint(double x, double y)
+    {
+        JsRuntime.InvokeVoidAsync("console.log", "added one point");
+        //Console.WriteLine("added one point");
         Field.AddVertex((int)x, (int)y);
 
         if (Field.DCEL.Vertices.Count == 3)
@@ -165,6 +229,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
         }
 
         RenderInBlazor();
+        isStateChanged = true;
     }
 
 
@@ -237,6 +302,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
 
         this.ctx.EndBatchAsync();
+
     }
 
 #line default

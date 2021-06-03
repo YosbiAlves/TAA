@@ -103,8 +103,22 @@ using Blazor.Extensions.Canvas.Canvas2D;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 5 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+using System.Threading;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 6 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+using System.Timers;
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/")]
-    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase
+    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase, IDisposable
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -112,7 +126,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 96 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+#line 130 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
       
     private Models.Field Field = new Models.Field();
 
@@ -123,39 +137,67 @@ using Blazor.Extensions.Canvas.Canvas2D;
 
     private Canvas2DContext ctx;
     protected BECanvasComponent _canvasReference;
+    private System.Timers.Timer timer;
 
-
+    // Kind of constructor
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this.ctx = await _canvasReference.CreateCanvas2DAsync();
         await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
         await JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         await base.OnInitializedAsync();
+
+        timer = new System.Timers.Timer();
+        timer.Interval = 1000; // each second
+        timer.Elapsed += timer_elapsed;
+        timer.Start();
+
     }
+
+    private void timer_elapsed(object sender, ElapsedEventArgs e)
+    {
+        Console.WriteLine("tick");
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    // Destructor
+    void IDisposable.Dispose()
+    {
+        timer.Stop();
+        timer.Elapsed -= timer_elapsed;
+    }
+
+
 
     private void ResizeClick()
     {
         M = tempM;
         JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
+        Field = new Models.Field();
         //StateHasChanged();
     }
 
     private void AddOnePointClick()
     {
-        if (pointX < M && pointY < M )
+        Console.WriteLine("added one point");
+        if (pointX < M && pointY < M)
             AddOnePoint(pointX, pointY);
+
+
     }
 
     private DateTime LastRender;
 
     [JSInvokable]
-    public void ResizeInBlazor(double width, double height) {
+    public void ResizeInBlazor(double width, double height)
+    {
         Console.WriteLine("M: " + M.ToString());
         Field.Resize(M, M);
     }
 
     [JSInvokable]
-    public void AddOnePoint(double x, double y) {
+    public void AddOnePoint(double x, double y)
+    {
         Field.AddVertex((int)x, (int)y);
 
         if (Field.DCEL.Vertices.Count == 3)

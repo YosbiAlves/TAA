@@ -3,11 +3,12 @@ namespace DCEL.Models
 {
     public class HalfEdge
     {
+        public int Tag;
         public Vertex Origin;
         public HalfEdge Twin;
         public HalfEdge Next;
         public HalfEdge Prev;
-        public Face Face;
+        public Face IncidentFace;
 
         public HalfEdge()
         {
@@ -15,7 +16,7 @@ namespace DCEL.Models
             Twin = null;
             Next = null;
             Prev = null;
-            Face = null;
+            IncidentFace = null;
         }
     }
 }

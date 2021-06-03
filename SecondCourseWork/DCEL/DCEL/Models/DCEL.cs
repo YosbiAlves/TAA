@@ -9,11 +9,11 @@ namespace DCEL.Models
         private readonly List<Vertex> vertices;
         private readonly List<Face> faces;
         private readonly List<HalfEdge> halfEdges;
-        private readonly Vertex infiniteVertex;
+        //private readonly Vertex infiniteVertex;
 
         internal DCEL()
         {
-            infiniteVertex = new Vertex (int.MaxValue, int.MaxValue);
+            //infiniteVertex = new Vertex (int.MaxValue, int.MaxValue);
             vertices = new List<Vertex>();//{infiniteVertex};
             faces = new List<Face>();
             halfEdges = new List<HalfEdge>();
@@ -22,12 +22,16 @@ namespace DCEL.Models
         internal void Add(Vertex vertex)
         {
             Debug.Assert(vertex != null);
+
+            vertex.Tag = vertices.Count;
             vertices.Add(vertex);
         }
 
         internal void Add(Face face)
         {
             Debug.Assert(face != null);
+
+            face.Tag = faces.Count;
             faces.Add(face);
         }
 
@@ -38,7 +42,11 @@ namespace DCEL.Models
             Debug.Assert(edge1.Twin == edge2);
             Debug.Assert(edge2.Twin == edge1);
             Debug.Assert(edge1 != edge2);
+
+            edge1.Tag = halfEdges.Count;
             halfEdges.Add(edge1);
+
+            edge2.Tag = halfEdges.Count;
             halfEdges.Add(edge2);
         }
 
@@ -85,7 +93,7 @@ namespace DCEL.Models
         /// A special vertex "at infinity", used to connect together the edges
         /// of any infinite
         /// </summary>
-        public Vertex InfiniteVertex { get { return infiniteVertex; } }
+        //public Vertex InfiniteVertex { get { return infiniteVertex; } }
 
         /// <summary>
         /// Gets all the half edges which border the specified face. For each
@@ -145,7 +153,7 @@ namespace DCEL.Models
             {
                 if (current == null)
                     throw new ArgumentException("Face's half edges are not a circularly linked list.");
-                adjacentFaces.Add(current.Twin.Face);
+                adjacentFaces.Add(current.Twin.IncidentFace);
             } while ((current = current.Next) != face.Edge);
         }
     }
