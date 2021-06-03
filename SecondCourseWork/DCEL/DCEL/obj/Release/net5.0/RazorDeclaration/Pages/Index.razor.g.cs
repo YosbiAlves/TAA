@@ -112,7 +112,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 97 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+#line 96 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
       
     private Models.Field Field = new Models.Field();
 
