@@ -9,6 +9,8 @@ namespace DCEL.Models
         private readonly List<Vertex> vertices;
         private readonly List<Face> faces;
         private readonly List<HalfEdge> halfEdges;
+
+        
         //private readonly Vertex infiniteVertex;
 
         internal DCEL()
