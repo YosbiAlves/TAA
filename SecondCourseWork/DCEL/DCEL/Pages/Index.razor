@@ -1,0 +1,189 @@
+﻿@page "/"
+
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+@inject IJSRuntime JsRuntime;
+
+
+        <div class="row">
+            <div class="col-8">
+                <div id="canvasHolder" style="position: fixed; background-color: magenta; width:@M; height:@M">
+                    <BECanvas Width="@M" Height="@M" @ref="_canvasReference"></BECanvas>
+                </div>
+            </div>
+            <div class="col">
+
+                    <div class="col">
+                        <div class="row form-group">
+                            <div class="col-5 center-text"><h6>X:</h6></div>
+                            <div class="col-7">
+                                <input type="number" @bind-value="@pointX" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-5 center-text"><h6>Y:</h6></div>
+                            <div class="col-7">
+                                <input type="number" @bind-value="@pointY" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-5 center-text"></div>
+                            <div class="col-7 center-text">
+                                <button @onclick="AddOnePointClick" style="width:100px">
+                                    Add Vertex
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="row form-group">
+                            <div class="col-5 center-text"><h6>Value of M:</h6></div>
+                            <div class="col-7">
+                                <input type="number" @bind-value="@M" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-5 center-text"></div>
+                            <div class="col-7 center-text">
+                                <button @onclick="ResizeClick" style="width:100px">
+                                    Resize
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+            </div>
+        </div>
+    
+
+
+
+@code{
+    private Models.Field Field = new Models.Field();
+
+    private int M = 600;
+    private double pointX = 0;
+    private double pointY = 0;
+
+    private Canvas2DContext ctx;
+    protected BECanvasComponent _canvasReference;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.ctx = await _canvasReference.CreateCanvas2DAsync();
+        await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
+        await JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
+        await base.OnInitializedAsync();
+    }
+
+    private void ResizeClick()
+    {
+        JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
+        //StateHasChanged();
+    }
+
+    private void AddOnePointClick()
+    {
+        AddOnePoint(pointX, pointY);
+    }
+
+    private DateTime LastRender;
+
+    [JSInvokable]
+    public void ResizeInBlazor(double width, double height) {
+        Console.WriteLine("M: " + M.ToString());
+        Field.Resize(M, M);
+    }
+
+    [JSInvokable]
+    public void AddOnePoint(double x, double y) {
+        Field.AddVertex((int)x, (int)y);
+
+        if (Field.DCEL.Vertices.Count == 3)
+        {
+
+        }
+        else if (Field.DCEL.Vertices.Count > 3)
+        {
+            /* TODO */
+        }
+
+        RenderInBlazor();
+    }
+
+
+    [JSInvokable]
+    public void RenderInBlazor()
+    {
+        /*if (BallField.Balls.Count == 0)
+            BallField.AddRandomBalls(50);*/
+
+        /*if (BallField.Points.Count == 0)
+            BallField.AddRandomPoints(50);*/
+
+        /*double fps = 1.0 / (DateTime.Now - LastRender).TotalSeconds;
+        LastRender = DateTime.Now;
+
+        BallField.StepForward();*/
+
+        this.ctx.BeginBatchAsync();
+
+        this.ctx.ClearRectAsync(0, 0, Field.Width, Field.Height);
+        this.ctx.SetFillStyleAsync("#DDDDDD");
+        this.ctx.FillRectAsync(0, 0, Field.Width, Field.Height);
+
+        /*await this.ctx.SetFontAsync("26px Segoe UI");
+        await this.ctx.SetFillStyleAsync("#000000");
+        await this.ctx.FillTextAsync("Blazor WebAssembly + HTML Canvas", 10, 30);
+
+        await this.ctx.SetFontAsync("16px consolas");
+        await this.ctx.FillTextAsync($"FPS: {fps:0.000}", 10, 50);
+
+        await this.ctx.SetStrokeStyleAsync("#000000");*/
+        /*foreach (var ball in BallField.Balls)
+        {
+            await this.ctx.BeginPathAsync();
+            await this.ctx.ArcAsync(ball.X, ball.Y, ball.R, 0, 2 * Math.PI, false);
+            await this.ctx.SetFillStyleAsync(ball.Color);
+            await this.ctx.FillAsync();
+            await this.ctx.StrokeAsync();
+        }*/
+        foreach (var vertex in Field.DCEL.Vertices)
+        {
+            this.ctx.BeginPathAsync();
+            this.ctx.ArcAsync(vertex.X, vertex.Y, 2, 0, 2 * Math.PI, false);
+            this.ctx.SetFillStyleAsync("#000000");
+            this.ctx.FillAsync();
+            this.ctx.StrokeAsync();
+        }
+
+        // how to make a line
+        /*this.ctx.BeginPathAsync();
+        this.ctx.MoveToAsync(0, 0);
+        this.ctx.LineToAsync(600, 600);
+        this.ctx.StrokeAsync();*/
+
+        // Dashed line
+        /*float[] segment = new float[2] {5, 15};
+        ctx.BeginPathAsync();
+        ctx.SetLineDashAsync(segment);
+        ctx.MoveToAsync(0, 50);
+        ctx.LineToAsync(300, 50);
+        ctx.StrokeAsync();
+
+        // Solid line
+        float[] noSegment = new float[2] {1,0 };
+        ctx.BeginPathAsync();
+        ctx.SetLineDashAsync(noSegment);
+        ctx.MoveToAsync(0, 100);
+        ctx.LineToAsync(300, 100);
+        ctx.StrokeAsync();*/
+
+
+        this.ctx.EndBatchAsync();
+    }
+}
