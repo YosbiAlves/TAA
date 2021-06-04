@@ -338,14 +338,30 @@ using System.Timers;
             this.ctx.StrokeAsync();
         }
 
+
         foreach (var edge in Field.DCEL.HalfEdges)
         {
             if (edge.Origin != null && edge.Next != null && edge.Next.Origin != null)
             {
-                this.ctx.BeginPathAsync();
-                this.ctx.MoveToAsync(edge.Origin.X, edge.Origin.Y);
-                this.ctx.LineToAsync(edge.Next.Origin.X, edge.Next.Origin.Y);
-                this.ctx.StrokeAsync();
+                if (Field.DCEL.Vertices.Count < 3 || edge.Twin.IncidentFace.Tag != 0)
+                {
+                    this.ctx.BeginPathAsync();
+
+                    if (edge.IncidentFace.Tag == 0)
+                    {
+                        this.ctx.SetStrokeStyleAsync("#000000");
+                        this.ctx.SetLineWidthAsync(2);
+                    }
+                    else
+                    {
+                        this.ctx.SetStrokeStyleAsync("#FF0000");
+                        this.ctx.SetLineWidthAsync(1);
+                    }
+                    this.ctx.MoveToAsync(edge.Origin.X, edge.Origin.Y);
+                    this.ctx.LineToAsync(edge.Next.Origin.X, edge.Next.Origin.Y);
+
+                    this.ctx.StrokeAsync();
+                }
             }
         }
 
@@ -364,7 +380,7 @@ using System.Timers;
         ctx.StrokeAsync();
 
         // Solid line
-        float[] noSegment = new float[2] {1,0 };
+        //float[] noSegment = new float[2] {1,0 };
         ctx.BeginPathAsync();
         ctx.SetLineDashAsync(noSegment);
         ctx.MoveToAsync(0, 100);

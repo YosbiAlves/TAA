@@ -250,8 +250,23 @@ namespace DCEL.Models
                     double distance = Vertex.minDistance(edge.Origin, edge.Next.Origin, vertex);
                     if (distance <= shortestDistance)
                     {
-                        shortestDistance = distance;
-                        closest = edge;
+                        if (distance == shortestDistance)
+                        {
+                            double d1 = Vertex.GetDistanceFromLine(closest.Origin, closest.Next.Origin, vertex);
+                            double d2 = Vertex.GetDistanceFromLine(edge.Origin, edge.Next.Origin, vertex);
+
+                            if (d2 > d1)
+                            {
+                                shortestDistance = distance;
+                                closest = edge;
+                            }
+                        }
+                        else
+                        {
+                            shortestDistance = distance;
+                            closest = edge;
+                        }
+                        
                     }
 
                 }

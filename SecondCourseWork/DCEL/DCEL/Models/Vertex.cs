@@ -28,7 +28,7 @@ namespace DCEL.Models
             t = Math.Max(0, Math.Min(1, t));
             return dist2(p, new Vertex(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y)));
         }
-        public static double distToSegment(Vertex p, Vertex v, Vertex w) { return Math.Sqrt(distToSegmentSquared(p, v, w)); }
+        public static double distToSegment(Vertex p, Vertex v, Vertex w) { return Math.Sqrt(distToSegmentSquared(p, v, w)); }*/
         public static double GetDistanceFromLine(Vertex linePoint1, Vertex linePoint2, Vertex point)
         {
             double numerator = ((linePoint2.X - linePoint1.X) * (linePoint1.Y - point.Y)) - ((linePoint1.X - point.X) * (linePoint2.Y - linePoint1.Y));
@@ -43,7 +43,7 @@ namespace DCEL.Models
                 return numerator / denominator;
             return 0;
             //return 0;
-        }*/
+        }
 
 
         // code from https://www.geeksforgeeks.org/minimum-distance-from-a-point-to-the-line-segment-using-vectors/
