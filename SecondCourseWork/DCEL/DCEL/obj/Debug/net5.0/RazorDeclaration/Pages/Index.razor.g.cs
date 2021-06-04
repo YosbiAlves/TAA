@@ -110,15 +110,8 @@ using Models;
 #line default
 #line hidden
 #nullable disable
-#nullable restore
-#line 6 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
-using System.Timers;
-
-#line default
-#line hidden
-#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/")]
-    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase, IDisposable
+    public partial class Index : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -126,59 +119,31 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 197 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+#line 238 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
       
     private Models.Field Field = new Models.Field();
 
-    private int tempM = 600;
-    private int M = 600;
-    private double pointX = 0;
-    private double pointY = 0;
+    private int     tempM   = 600;
+    private int     M       = 600;
+    private double  pointX  = 0;
+    private double  pointY  = 0;
+    private int     renderNumber = 0;
 
     private Canvas2DContext ctx;
     protected BECanvasComponent _canvasReference;
-    private System.Timers.Timer timer;
-    private bool isStateChanged = false;
 
-    bool firstTime = true;
-
-    // Kind of constructor
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this.ctx = await _canvasReference.CreateCanvas2DAsync();
         await JsRuntime.InvokeAsync<object>("initRenderJS", DotNetObjectReference.Create(this));
         await JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         await base.OnInitializedAsync();
-
-        /*timer = new System.Timers.Timer();
-        timer.Interval = 2000; // each second
-        timer.Elapsed += timer_elapsed;
-        timer.Start();*/
-
     }
 
-
-
-    private void timer_elapsed(object sender, ElapsedEventArgs e)
+    private void ResetClick()
     {
-        //JsRuntime.InvokeVoidAsync("console.log", "added one point");
-        /*Console.WriteLine("tick");
-        if (isStateChanged)
-        {
-            isStateChanged = false;
-            InvokeAsync(() => { StateHasChanged(); });
-        }*/
-
+        Field = new Models.Field();
     }
-
-    // Destructor
-    void IDisposable.Dispose()
-    {
-        //timer.Stop();
-        //timer.Elapsed -= timer_elapsed;
-    }
-
-
 
     private void ResizeClick()
     {
@@ -187,13 +152,20 @@ using System.Timers;
         M = tempM;
         JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         Field = new Models.Field();
-        //StateHasChanged();
     }
 
     private void AddOnePointClick()
     {
+
+
         if (pointX < M && pointY < M)
-            AddOnePoint(pointX, pointY);
+        {
+            Field.AddVertex((int)pointX, (int)pointY);
+            RenderInBlazor();
+        }
+
+
+
 
         pointX = 0;
         pointY = 0;
@@ -217,163 +189,73 @@ using System.Timers;
     [JSInvokable]
     public void AddOnePoint(double x, double y)
     {
-        JsRuntime.InvokeVoidAsync("console.log", "added one point");
-        //Console.WriteLine("added one point");
-        Field.AddVertex((int)x, (int)y);
-
-        if (Field.DCEL.Vertices.Count == 3)
-        {
-
-        }
-        else if (Field.DCEL.Vertices.Count > 3)
-        {
-            /* TODO */
-        }
-
+        Field.AddVertex((int)x, ((int)y - 600) * -1);
         RenderInBlazor();
-        isStateChanged = true;
     }
 
 
     [JSInvokable]
     public void RenderInBlazor()
     {
-
-        /*if (firstTime)
-        {
-            Vertex vertex1 = new Vertex(100, 100);
-            Vertex vertex2 = new Vertex(200, 200);
-            Vertex vertex3 = new Vertex(100, 200);
-
-            HalfEdge halfEdge1 = new HalfEdge();
-            HalfEdge halfEdge2 = new HalfEdge();
-            HalfEdge halfEdge3 = new HalfEdge();
-            HalfEdge halfEdge4 = new HalfEdge();
-            HalfEdge halfEdge5 = new HalfEdge();
-            HalfEdge halfEdge6 = new HalfEdge();
-
-            halfEdge1.Next = halfEdge3;
-            halfEdge1.Prev = halfEdge5;
-            halfEdge1.Origin = vertex1;
-            halfEdge1.Twin = halfEdge2;
-            vertex1.IncidentEdge = halfEdge1;
-
-            halfEdge2.Next = halfEdge4;
-            halfEdge2.Prev = halfEdge6;
-            halfEdge2.Origin = vertex1;
-            halfEdge2.Twin = halfEdge1;
-
-            halfEdge3.Next = halfEdge5;
-            halfEdge3.Prev = halfEdge1;
-            halfEdge3.Origin = vertex2;
-            halfEdge3.Twin = halfEdge4;
-            vertex2.IncidentEdge = halfEdge3;
-
-            halfEdge4.Next = halfEdge6;
-            halfEdge4.Prev = halfEdge2;
-            halfEdge4.Origin = vertex2;
-            halfEdge4.Twin = halfEdge3;
-
-            halfEdge5.Next = halfEdge1;
-            halfEdge5.Prev = halfEdge3;
-            halfEdge5.Origin = vertex3;
-            halfEdge5.Twin = halfEdge6;
-            vertex3.IncidentEdge = halfEdge5;
-
-            halfEdge6.Next = halfEdge3;
-            halfEdge6.Prev = halfEdge4;
-            halfEdge6.Origin = vertex3;
-            halfEdge6.Twin = halfEdge5;
-
-            Field.DCEL.Add(vertex1);
-            Field.DCEL.Add(vertex2);
-            Field.DCEL.Add(vertex3);
-
-            Field.DCEL.Add(halfEdge1, halfEdge2);
-            Field.DCEL.Add(halfEdge3, halfEdge4);
-            Field.DCEL.Add(halfEdge5, halfEdge6);
-
-            firstTime = false;
-
-        }*/
-        /*if (BallField.Balls.Count == 0)
-            BallField.AddRandomBalls(50);*/
-
-        /*if (BallField.Points.Count == 0)
-            BallField.AddRandomPoints(50);*/
-
-        /*double fps = 1.0 / (DateTime.Now - LastRender).TotalSeconds;
-        LastRender = DateTime.Now;
-
-        BallField.StepForward();*/
-
         this.ctx.BeginBatchAsync();
 
         this.ctx.ClearRectAsync(0, 0, Field.Width, Field.Height);
         this.ctx.SetFillStyleAsync("#DDDDDD");
         this.ctx.FillRectAsync(0, 0, Field.Width, Field.Height);
 
-        /*await this.ctx.SetFontAsync("26px Segoe UI");
-        await this.ctx.SetFillStyleAsync("#000000");
-        await this.ctx.FillTextAsync("Blazor WebAssembly + HTML Canvas", 10, 30);
-
-        await this.ctx.SetFontAsync("16px consolas");
-        await this.ctx.FillTextAsync($"FPS: {fps:0.000}", 10, 50);
-
-        await this.ctx.SetStrokeStyleAsync("#000000");*/
-        /*foreach (var ball in BallField.Balls)
+        Console.WriteLine("hello");
+        if (renderNumber < 3)
         {
-            await this.ctx.BeginPathAsync();
-            await this.ctx.ArcAsync(ball.X, ball.Y, ball.R, 0, 2 * Math.PI, false);
-            await this.ctx.SetFillStyleAsync(ball.Color);
-            await this.ctx.FillAsync();
-            await this.ctx.StrokeAsync();
-        }*/
-        foreach (var vertex in Field.DCEL.Vertices)
-        {
-            this.ctx.BeginPathAsync();
-            this.ctx.ArcAsync(vertex.X, vertex.Y, 2, 0, 2 * Math.PI, false);
+            this.ctx.SetFontAsync("26px Segoe UI");
             this.ctx.SetFillStyleAsync("#000000");
-            this.ctx.FillAsync();
-            this.ctx.StrokeAsync();
+            this.ctx.FillTextAsync("Click on the shaded area to add a point", 10, 30);
+            renderNumber++;
+
         }
+
+
+
 
         foreach (var edge in Field.DCEL.HalfEdges)
         {
             if (edge.Origin != null && edge.Next != null && edge.Next.Origin != null)
             {
-                this.ctx.BeginPathAsync();
-                this.ctx.MoveToAsync(edge.Origin.X, edge.Origin.Y);
-                this.ctx.LineToAsync(edge.Next.Origin.X, edge.Next.Origin.Y);
-                this.ctx.StrokeAsync();
+                if (Field.DCEL.Vertices.Count < 3 || edge.Twin.IncidentFace.Tag != 0)
+                {
+                    this.ctx.BeginPathAsync();
+
+                    if (edge.IncidentFace.Tag == 0)
+                    {
+                        this.ctx.SetStrokeStyleAsync("#000000");
+                        this.ctx.SetLineWidthAsync(2);
+                    }
+                    else
+                    {
+                        this.ctx.SetStrokeStyleAsync("#FF0000");
+                        this.ctx.SetLineWidthAsync(1);
+                    }
+                    this.ctx.MoveToAsync(edge.Origin.X, (edge.Origin.Y - 600) * -1);
+                    this.ctx.LineToAsync(edge.Next.Origin.X, (edge.Next.Origin.Y - 600) * -1);
+
+                    this.ctx.StrokeAsync();
+                }
             }
         }
 
-        // how to make a line
-        /*this.ctx.BeginPathAsync();
-        this.ctx.MoveToAsync(0, 0);
-        this.ctx.LineToAsync(600, 600);
-        this.ctx.StrokeAsync();*/
+        foreach (var vertex in Field.DCEL.Vertices)
+        {
+            this.ctx.BeginPathAsync();
+            this.ctx.ArcAsync(vertex.X, (vertex.Y - 600) * -1, 2, 0, 2 * Math.PI, false);
+            this.ctx.SetFillStyleAsync("#000000");
+            this.ctx.FillAsync();
+            this.ctx.StrokeAsync();
 
-        // Dashed line
-        /*float[] segment = new float[2] {5, 15};
-        ctx.BeginPathAsync();
-        ctx.SetLineDashAsync(segment);
-        ctx.MoveToAsync(0, 50);
-        ctx.LineToAsync(300, 50);
-        ctx.StrokeAsync();
-
-        // Solid line
-        float[] noSegment = new float[2] {1,0 };
-        ctx.BeginPathAsync();
-        ctx.SetLineDashAsync(noSegment);
-        ctx.MoveToAsync(0, 100);
-        ctx.LineToAsync(300, 100);
-        ctx.StrokeAsync();*/
-
+            this.ctx.SetFontAsync("14px Segoe UI");
+            this.ctx.SetFillStyleAsync("#0000FF");
+            this.ctx.FillTextAsync("v" + vertex.Tag, vertex.X + 4, ((vertex.Y - 600) * -1) + 4);
+        }
 
         this.ctx.EndBatchAsync();
-
     }
 
 #line default

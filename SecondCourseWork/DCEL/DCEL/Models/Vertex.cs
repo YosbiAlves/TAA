@@ -7,9 +7,11 @@ namespace DCEL.Models
         public HalfEdge IncidentEdge;
         public int X;
         public int Y;
+        public double Angle;
+
         public Vertex(int x, int y)
         {
-            (X, Y) = (x, y);
+            (X, Y, Angle) = (x, y, 0);
         }
 
         public Vertex Substract(Vertex p)
@@ -17,18 +19,6 @@ namespace DCEL.Models
             return new Vertex(this.X - p.X, this.Y - p.Y);
         }
 
-        /*public static int sqr(int x) { return x * x; }
-        public static int dist2(Vertex v, Vertex w) { return sqr(v.X - w.X) + sqr(v.Y - w.Y); }
-
-        public static int distToSegmentSquared(Vertex p, Vertex v, Vertex w)
-        {
-            var l2 = dist2(v, w);
-            if (l2 == 0) return dist2(p, v);
-            var t = ((p.X - v.X) * (w.X - v.X) + (p.Y - v.Y) * (w.Y - v.Y)) / l2;
-            t = Math.Max(0, Math.Min(1, t));
-            return dist2(p, new Vertex(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y)));
-        }
-        public static double distToSegment(Vertex p, Vertex v, Vertex w) { return Math.Sqrt(distToSegmentSquared(p, v, w)); }*/
         public static double GetDistanceFromLine(Vertex linePoint1, Vertex linePoint2, Vertex point)
         {
             double numerator = ((linePoint2.X - linePoint1.X) * (linePoint1.Y - point.Y)) - ((linePoint1.X - point.X) * (linePoint2.Y - linePoint1.Y));
@@ -36,34 +26,24 @@ namespace DCEL.Models
                 numerator *= -1;
 
             double denominator = GetDistance(linePoint1, linePoint2);
-            if (denominator <= 0)
-                throw new ArgumentException("Denominator < 0." + denominator);//denominator *= -1;
 
             if (denominator > 0)
                 return numerator / denominator;
             return 0;
-            //return 0;
         }
 
 
         // code from https://www.geeksforgeeks.org/minimum-distance-from-a-point-to-the-line-segment-using-vectors/
-        public static double minDistance(Vertex A, Vertex  B, Vertex E)
+        public static double GetDistanceFromLineSegment(Vertex A, Vertex  B, Vertex E)
         {
-
             // vector AB
             Vertex AB = B.Substract(A);
-            //AB.F = B.F - A.F;
-            //AB.S = B.S - A.S;
 
             // vector BP
             Vertex BE = E.Substract(B);
-            //BE.F = E.F - B.F;
-            //BE.S = E.S - B.S;
 
             // vector AP
             Vertex AE = E.Substract(A);
-            //AE.F = E.F - A.F;
-            //AE.S = E.S - A.S;
 
             // Variables to store dot product
             double AB_BE, AB_AE;
@@ -97,7 +77,6 @@ namespace DCEL.Models
             // Case 3
             else
             {
-
                 // Finding the perpendicular distance
                 double x1 = AB.X;
                 double y1 = AB.Y;

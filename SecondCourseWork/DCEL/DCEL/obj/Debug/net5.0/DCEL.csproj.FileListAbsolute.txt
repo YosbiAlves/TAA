@@ -1272,3 +1272,4 @@
 /Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/obj/Debug/net5.0/DCEL.dll
 /Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/obj/Debug/net5.0/ref/DCEL.dll
 /Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/obj/Debug/net5.0/DCEL.pdb
+/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/obj/Debug/net5.0/scopedcss/Pages/Index.razor.rz.scp.css

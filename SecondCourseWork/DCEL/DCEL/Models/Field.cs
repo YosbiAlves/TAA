@@ -5,8 +5,9 @@ namespace DCEL.Models
 {
     public class Field
     {
-        //public readonly List<Vertex> Vertices = new List<Vertex>();
         public readonly DCEL DCEL = new DCEL();
+        public readonly CCWPolygon CCWPolygon = new CCWPolygon();
+
         public double Width { get; private set; }
         public double Height { get; private set; }
 
@@ -15,28 +16,17 @@ namespace DCEL.Models
      
         public void AddVertex(int x, int y)
         {
-            DCEL.Add(
-                    new Vertex(
-                        x: x,
-                        y: y
-                        )
-                    );
-        }
-
-        /*public void AddRandomPoints(int count = 10)
-        {
-            Random rand = new Random();
-            
-            for (int i = 0; i < count; i++)
+            // Preventing repeated points
+            foreach( var v in DCEL.Vertices)
             {
-                Vertices.Add (
-                    new Vertex(
-                        x: (int)(Width * rand.NextDouble()),
-                        y: (int)(Height * rand.NextDouble())
-                        )
-                    );
+                if (v.X == x && v.Y == y)
+                    return; // vertex repeated
             }
-            
-        }*/
+
+            Vertex vertex = new Vertex(x, y);
+
+            DCEL.Add(vertex);
+            CCWPolygon.Add(vertex);
+        }
     }
 }
