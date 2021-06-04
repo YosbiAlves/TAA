@@ -23,10 +23,241 @@ namespace DCEL.Models
 
         internal void Add(Vertex vertex)
         {
-            Debug.Assert(vertex != null);
-
+            Console.Write("going to add vertex");
             vertex.Tag = vertices.Count;
+
+            if (vertices.Count == 1)
+            {
+                AddSecondVertex(vertex);
+            }
+            else if (vertices.Count == 2)
+            {
+                AddThirdVertex(vertex);
+            }
+            else if (vertices.Count > 2)
+            {
+                AddAnotherVertex(vertex);
+            }
+
             vertices.Add(vertex);
+        }
+
+        private void AddSecondVertex(Vertex vertex)
+        {
+            HalfEdge halfEdge1 = new HalfEdge();
+            HalfEdge halfEdge2 = new HalfEdge();
+            Face firstFace = new Face();
+            Vertex vertex0 = vertices[0];
+
+            vertex0.IncidentEdge = halfEdge1;
+            vertex.IncidentEdge = halfEdge2;
+
+            halfEdge1.IncidentFace = firstFace;
+            halfEdge1.Next = halfEdge2;
+            halfEdge1.Origin = vertex0;
+            halfEdge1.Prev = halfEdge2;
+            halfEdge1.Twin = halfEdge2;
+
+            halfEdge2.IncidentFace = firstFace;
+            halfEdge2.Next = halfEdge1;
+            halfEdge2.Origin = vertex;
+            halfEdge2.Prev = halfEdge1;
+            halfEdge2.Twin = halfEdge1;
+
+            firstFace.Edge = halfEdge1;
+
+            Add(halfEdge1, halfEdge2);
+            Add(firstFace);
+        }
+
+        private void AddAVertex(HalfEdge halfEdge0, Vertex vertex3)
+        {
+
+            // After obtaining the closest edge
+            Vertex vertex1 = halfEdge0.Origin;
+            Vertex vertex2 = halfEdge0.Next.Origin;
+
+            HalfEdge halfEdge1 = new HalfEdge();
+            HalfEdge halfEdge2 = new HalfEdge();
+            HalfEdge halfEdge3 = new HalfEdge();
+            HalfEdge halfEdge4 = new HalfEdge();
+
+            Face face = new Face();
+            face.Edge = halfEdge1;
+            faces[0].Edge = halfEdge2;
+
+            vertex3.IncidentEdge = halfEdge1;
+
+            halfEdge1.IncidentFace = face;
+            halfEdge1.Next = halfEdge0;
+            halfEdge1.Prev = halfEdge3;
+            halfEdge1.Twin = halfEdge2;
+            halfEdge1.Origin = vertex3;
+
+            halfEdge3.IncidentFace = face;
+            halfEdge3.Next = halfEdge1;
+            halfEdge3.Prev = halfEdge0;
+            halfEdge3.Twin = halfEdge4;
+            halfEdge3.Origin = vertex2;
+
+            halfEdge2.IncidentFace = faces[0];
+            halfEdge2.Next = halfEdge4;
+            halfEdge2.Prev = halfEdge0.Prev;
+            halfEdge2.Twin = halfEdge1;
+            halfEdge2.Origin = vertex1;
+
+            halfEdge4.IncidentFace = faces[0];
+            halfEdge4.Next = halfEdge0.Next;
+            halfEdge4.Prev = halfEdge2;
+            halfEdge4.Twin = halfEdge3;
+            halfEdge4.Origin = vertex3;
+
+            halfEdge0.IncidentFace = face;
+            halfEdge0.Next.Prev = halfEdge4;
+            halfEdge0.Prev.Next = halfEdge2;
+            halfEdge0.Next = halfEdge3;
+            halfEdge0.Prev = halfEdge1;
+
+            Add(halfEdge1, halfEdge2);
+            Add(halfEdge3, halfEdge4);
+
+            Add(face);
+
+        }
+        private void AddThirdVertex(Vertex vertex3)
+        {
+            Vertex vertex1 = vertices[0];
+            Vertex vertex2 = vertices[1];
+
+            HalfEdge halfEdge1 = halfEdges[0];
+            HalfEdge halfEdge2 = halfEdges[1];
+            HalfEdge halfEdge3 = new HalfEdge();
+            HalfEdge halfEdge4 = new HalfEdge();
+            HalfEdge halfEdge5 = new HalfEdge();
+            HalfEdge halfEdge6 = new HalfEdge();
+
+            Face face = new Face();
+
+            // Testing V1-V2-V3 turn
+
+            bool turnLeft = Vertex.IsTurningLeft(vertex1, vertex2, vertex3);
+
+            if (turnLeft)
+            {
+                // this min that halfedge2 is outside so we must change halfedge1
+                face.Edge = halfEdge1;
+                halfEdge1.IncidentFace = face;
+                halfEdge1.Next = halfEdge3;
+                halfEdge1.Prev = halfEdge5;
+
+                halfEdge3.IncidentFace = face;
+                halfEdge3.Next = halfEdge5;
+                halfEdge3.Prev = halfEdge1;
+                halfEdge3.Twin = halfEdge4;
+                halfEdge3.Origin = vertex2;
+
+                halfEdge5.IncidentFace = face;
+                halfEdge5.Next = halfEdge1;
+                halfEdge5.Prev = halfEdge3;
+                halfEdge5.Twin = halfEdge6;
+                halfEdge5.Origin = vertex3;
+
+                halfEdge2.Next = halfEdge6;
+                halfEdge2.Prev = halfEdge4;
+
+                halfEdge4.IncidentFace = faces[0];
+                halfEdge4.Next = halfEdge2;
+                halfEdge4.Prev = halfEdge6;
+                halfEdge4.Twin = halfEdge3;
+                halfEdge4.Origin = vertex3;
+
+                halfEdge6.IncidentFace = faces[0];
+                halfEdge6.Next = halfEdge4;
+                halfEdge6.Prev = halfEdge2;
+                halfEdge6.Twin = halfEdge5;
+                halfEdge6.Origin = vertex1;
+
+                faces[0].Edge = halfEdge2;
+
+
+                vertex3.IncidentEdge = halfEdge5;
+            }
+            else
+            {
+                face.Edge = halfEdge2;
+                halfEdge2.IncidentFace = face;
+                halfEdge2.Next = halfEdge4;
+                halfEdge2.Prev = halfEdge6;
+
+                halfEdge4.IncidentFace = face;
+                halfEdge4.Next = halfEdge6;
+                halfEdge4.Prev = halfEdge2;
+                halfEdge4.Twin = halfEdge3;
+                halfEdge4.Origin = vertex1;
+
+                halfEdge6.IncidentFace = face;
+                halfEdge6.Next = halfEdge2;
+                halfEdge6.Prev = halfEdge4;
+                halfEdge6.Twin = halfEdge5;
+                halfEdge6.Origin = vertex3;
+
+                halfEdge1.Next = halfEdge5;
+                halfEdge1.Prev = halfEdge3;
+
+                halfEdge3.IncidentFace = faces[0];
+                halfEdge3.Next = halfEdge1;
+                halfEdge3.Prev = halfEdge5;
+                halfEdge3.Twin = halfEdge4;
+                halfEdge3.Origin = vertex3;
+
+                halfEdge5.IncidentFace = faces[0];
+                halfEdge5.Next = halfEdge3;
+                halfEdge5.Prev = halfEdge1;
+                halfEdge5.Twin = halfEdge6;
+                halfEdge5.Origin = vertex2;
+
+                vertex3.IncidentEdge = halfEdge6;
+            }
+
+            Add(halfEdge3, halfEdge4);
+            Add(halfEdge5, halfEdge6);
+
+            Add(face);
+        }
+
+        private void AddAnotherVertex(Vertex vertex)
+        {
+            List<HalfEdge> externalEdges = new List<HalfEdge>();
+            GetBorderEdges(faces[0], externalEdges);
+
+            // Getting the closest edge to this vertice
+            HalfEdge closest = null;
+            double shortestDistance = double.MaxValue;
+            foreach (var edge in externalEdges)
+            {
+                if (closest == null)
+                {
+                    closest = edge;
+                    //shortestDistance = Vertex.GetDistanceFromLine(edge.Origin, edge.Next.Origin, vertex);
+                    //shortestDistance = Vertex.distToSegment(vertex, edge.Origin, edge.Next.Origin);
+
+                    shortestDistance = Vertex.minDistance(edge.Origin, edge.Next.Origin, vertex);
+                }
+                else
+                {
+                    //double distance = Vertex.GetDistanceFromLine(edge.Origin, edge.Next.Origin, vertex);
+                    //double distance = Vertex.distToSegment(vertex, edge.Origin, edge.Next.Origin);
+                    double distance = Vertex.minDistance(edge.Origin, edge.Next.Origin, vertex);
+                    if (distance <= shortestDistance)
+                    {
+                        shortestDistance = distance;
+                        closest = edge;
+                    }
+
+                }
+            }
+
+            AddAVertex(closest, vertex);
         }
 
         internal void Add(Face face)
@@ -50,29 +281,6 @@ namespace DCEL.Models
 
             edge2.Tag = halfEdges.Count;
             halfEdges.Add(edge2);
-        }
-
-        public void MakeFirstTriangle()
-        {
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                Vertex start;
-                Vertex end;
-                if (i < vertices.Count - 1)
-                {
-                    start = vertices[i];
-                    end = vertices[i + 1];
-                }
-                else
-                {
-                    start = vertices[i];
-                    end = vertices[0];
-                }
-                   
-
-                HalfEdge edge = new HalfEdge();
-                HalfEdge twinEdge = new HalfEdge();
-            }
         }
 
         /// <summary>
@@ -114,7 +322,7 @@ namespace DCEL.Models
             do
             {
                 if (current == null)
-                    throw new ArgumentException("Face's half edges are not a circularly linked list.");
+                       throw new ArgumentException("Face's half edges are not a circularly linked list.");
                 borderEdges.Add(current);
             } while ((current = current.Next) != face.Edge);
         }
@@ -127,14 +335,9 @@ namespace DCEL.Models
         /// composing vertices will be added to.</param>
         public static void GetComposingVertices(Face face, ICollection<Vertex> composingVertices)
         {
-            if (face == null) throw new ArgumentNullException("face");
-            if (composingVertices == null) throw new ArgumentNullException("composingVertices");
-
             var current = face.Edge;
             do
             {
-                if (current == null)
-                    throw new ArgumentException("Face's half edges are not a circularly linked list.");
                 composingVertices.Add(current.Origin);
             } while ((current = current.Next) != face.Edge);
         }

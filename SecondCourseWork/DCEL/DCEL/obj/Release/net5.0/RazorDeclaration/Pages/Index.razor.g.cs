@@ -105,7 +105,7 @@ using Blazor.Extensions.Canvas.Canvas2D;
 #nullable disable
 #nullable restore
 #line 5 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
-using System.Threading;
+using Models;
 
 #line default
 #line hidden
@@ -126,7 +126,7 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 130 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
+#line 197 "/Users/yosbi/Documents/Universidad/Algoritmos/Advance/TAA/SecondCourseWork/DCEL/DCEL/Pages/Index.razor"
       
     private Models.Field Field = new Models.Field();
 
@@ -138,6 +138,9 @@ using System.Timers;
     private Canvas2DContext ctx;
     protected BECanvasComponent _canvasReference;
     private System.Timers.Timer timer;
+    private bool isStateChanged = false;
+
+    bool firstTime = true;
 
     // Kind of constructor
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -147,30 +150,40 @@ using System.Timers;
         await JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         await base.OnInitializedAsync();
 
-        timer = new System.Timers.Timer();
-        timer.Interval = 1000; // each second
+        /*timer = new System.Timers.Timer();
+        timer.Interval = 2000; // each second
         timer.Elapsed += timer_elapsed;
-        timer.Start();
+        timer.Start();*/
 
     }
 
+
+
     private void timer_elapsed(object sender, ElapsedEventArgs e)
     {
-        Console.WriteLine("tick");
-        InvokeAsync(() => { StateHasChanged(); });
+        //JsRuntime.InvokeVoidAsync("console.log", "added one point");
+        /*Console.WriteLine("tick");
+        if (isStateChanged)
+        {
+            isStateChanged = false;
+            InvokeAsync(() => { StateHasChanged(); });
+        }*/
+
     }
 
     // Destructor
     void IDisposable.Dispose()
     {
-        timer.Stop();
-        timer.Elapsed -= timer_elapsed;
+        //timer.Stop();
+        //timer.Elapsed -= timer_elapsed;
     }
 
 
 
     private void ResizeClick()
     {
+        if (tempM > 1500) tempM = 1500;
+        if (tempM < 1) tempM = 1;
         M = tempM;
         JsRuntime.InvokeVoidAsync("resizeCanvasOnDemand", M);
         Field = new Models.Field();
@@ -179,25 +192,33 @@ using System.Timers;
 
     private void AddOnePointClick()
     {
-        Console.WriteLine("added one point");
         if (pointX < M && pointY < M)
             AddOnePoint(pointX, pointY);
 
-
+        pointX = 0;
+        pointY = 0;
     }
 
     private DateTime LastRender;
 
     [JSInvokable]
+    public void UpdateTable()
+    {
+        StateHasChanged();
+    }
+
+    [JSInvokable]
     public void ResizeInBlazor(double width, double height)
     {
-        Console.WriteLine("M: " + M.ToString());
+        Console.WriteLine("ResizeInBlazor M: " + M.ToString());
         Field.Resize(M, M);
     }
 
     [JSInvokable]
     public void AddOnePoint(double x, double y)
     {
+        JsRuntime.InvokeVoidAsync("console.log", "added one point");
+        //Console.WriteLine("added one point");
         Field.AddVertex((int)x, (int)y);
 
         if (Field.DCEL.Vertices.Count == 3)
@@ -210,12 +231,71 @@ using System.Timers;
         }
 
         RenderInBlazor();
+        isStateChanged = true;
     }
 
 
     [JSInvokable]
     public void RenderInBlazor()
     {
+
+        /*if (firstTime)
+        {
+            Vertex vertex1 = new Vertex(100, 100);
+            Vertex vertex2 = new Vertex(200, 200);
+            Vertex vertex3 = new Vertex(100, 200);
+
+            HalfEdge halfEdge1 = new HalfEdge();
+            HalfEdge halfEdge2 = new HalfEdge();
+            HalfEdge halfEdge3 = new HalfEdge();
+            HalfEdge halfEdge4 = new HalfEdge();
+            HalfEdge halfEdge5 = new HalfEdge();
+            HalfEdge halfEdge6 = new HalfEdge();
+
+            halfEdge1.Next = halfEdge3;
+            halfEdge1.Prev = halfEdge5;
+            halfEdge1.Origin = vertex1;
+            halfEdge1.Twin = halfEdge2;
+            vertex1.IncidentEdge = halfEdge1;
+
+            halfEdge2.Next = halfEdge4;
+            halfEdge2.Prev = halfEdge6;
+            halfEdge2.Origin = vertex1;
+            halfEdge2.Twin = halfEdge1;
+
+            halfEdge3.Next = halfEdge5;
+            halfEdge3.Prev = halfEdge1;
+            halfEdge3.Origin = vertex2;
+            halfEdge3.Twin = halfEdge4;
+            vertex2.IncidentEdge = halfEdge3;
+
+            halfEdge4.Next = halfEdge6;
+            halfEdge4.Prev = halfEdge2;
+            halfEdge4.Origin = vertex2;
+            halfEdge4.Twin = halfEdge3;
+
+            halfEdge5.Next = halfEdge1;
+            halfEdge5.Prev = halfEdge3;
+            halfEdge5.Origin = vertex3;
+            halfEdge5.Twin = halfEdge6;
+            vertex3.IncidentEdge = halfEdge5;
+
+            halfEdge6.Next = halfEdge3;
+            halfEdge6.Prev = halfEdge4;
+            halfEdge6.Origin = vertex3;
+            halfEdge6.Twin = halfEdge5;
+
+            Field.DCEL.Add(vertex1);
+            Field.DCEL.Add(vertex2);
+            Field.DCEL.Add(vertex3);
+
+            Field.DCEL.Add(halfEdge1, halfEdge2);
+            Field.DCEL.Add(halfEdge3, halfEdge4);
+            Field.DCEL.Add(halfEdge5, halfEdge6);
+
+            firstTime = false;
+
+        }*/
         /*if (BallField.Balls.Count == 0)
             BallField.AddRandomBalls(50);*/
 
@@ -258,6 +338,17 @@ using System.Timers;
             this.ctx.StrokeAsync();
         }
 
+        foreach (var edge in Field.DCEL.HalfEdges)
+        {
+            if (edge.Origin != null && edge.Next != null && edge.Next.Origin != null)
+            {
+                this.ctx.BeginPathAsync();
+                this.ctx.MoveToAsync(edge.Origin.X, edge.Origin.Y);
+                this.ctx.LineToAsync(edge.Next.Origin.X, edge.Next.Origin.Y);
+                this.ctx.StrokeAsync();
+            }
+        }
+
         // how to make a line
         /*this.ctx.BeginPathAsync();
         this.ctx.MoveToAsync(0, 0);
@@ -282,6 +373,7 @@ using System.Timers;
 
 
         this.ctx.EndBatchAsync();
+
     }
 
 #line default
