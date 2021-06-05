@@ -290,7 +290,7 @@ namespace DCEL.Models
             HalfEdges.Add(edge2);
         }
 
-        public static void GetBorderEdges(Face face, ICollection<HalfEdge> borderEdges)
+        public void GetBorderEdges(Face face, ICollection<HalfEdge> borderEdges)
         {
             HalfEdge current = face.Edge;
             do
@@ -298,5 +298,26 @@ namespace DCEL.Models
                 borderEdges.Add(current);
             } while ((current = current.Next) != face.Edge);
         }
+
+        public List<Vertex> GetCCWComposingVertices()
+		{
+            
+            List<Vertex> vertices = new List<Vertex>();
+            
+
+            if (Vertices.Count >= 3) {
+                Face face = Faces[0];
+                var current = face.Edge;
+			    do
+			    {
+				    vertices.Add(current.Origin);
+			    } while ((current = current.Prev) != face.Edge);
+                return vertices;
+            }
+            
+            return vertices;
+            
+            
+		}
     }
 }

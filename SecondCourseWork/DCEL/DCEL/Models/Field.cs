@@ -6,7 +6,6 @@ namespace DCEL.Models
     public class Field
     {
         public readonly DCEL DCEL = new DCEL();
-        public readonly CCWPolygon CCWPolygon = new CCWPolygon();
 
         public double Width { get; private set; }
         public double Height { get; private set; }
@@ -26,7 +25,6 @@ namespace DCEL.Models
             Vertex vertex = new Vertex(x, y);
 
             DCEL.Add(vertex);
-            CCWPolygon.Add(vertex);
         }
     }
 }

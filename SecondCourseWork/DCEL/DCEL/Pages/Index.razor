@@ -218,9 +218,8 @@
                             <tr class="bg-light">
                                 <th>Vertex</th>
                                 <th>Position</th>
-                                <th>Angle</th>
                             </tr>
-                            @foreach (var vertex in Field.CCWPolygon.Vertices)
+                            @foreach (var vertex in Field.DCEL.GetCCWComposingVertices())
                             {
                                 <tr>
                                     <td>
@@ -228,9 +227,6 @@
                                     </td>
                                     <td>
                                         <h6 style="text-align:center">@vertex.X , @vertex.Y</h6>
-                                    </td>
-                                    <td>
-                                        <h6 style="text-align:center">@vertex.Angle</h6>
                                     </td>
                                 </tr>
                             }
