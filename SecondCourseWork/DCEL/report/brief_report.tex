@@ -1,0 +1,148 @@
+
+\documentclass[12pt, letterpaper]{article}
+\usepackage[a4paper, margin=1.5cm, total={6in, 8in}]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{8cm}
+
+       \textbf{\Large{Second coursework of Advanced Topics in Algorithms:}}
+       
+       \vspace{1cm}
+       
+       \textbf{\LARGE{Generate a simple polygon gluing triangles}}
+
+       \vspace{1cm}
+     
+            
+      \vfill
+
+      \textbf{By: Marta Gómez (202003750) and Yosbi Saenz (201801653)}
+            
+       \vspace{0.5cm}
+     
+            
+       Faculdade de Ciencias\\
+       Universidade do Porto\\
+       Portugal\\
+       June 06, 2021           
+   \end{center}
+\end{titlepage}
+	
+	\center{\textbf{\Large{Problem}}
+	\vspace{0.5cm}
+
+	\begin{flushleft}
+	Develop and implement an algorithm for generating a simple polygon with $n$-vertices, based on gluing triangles.
+	 \begin{itemize}
+	 	\item The coordinates of the vertices of the polygon will be non-negative integers, smaller than a given value $M$.
+		\item The output is the sequence of vertices of the polygon in CCW order and, if required, a triangulation of the polygon represented by a DCEL. You should write a function that creates the polygon and the DCEL representing the triangulation underlying the generation procedure.
+	\end{itemize} 
+	\end{flushleft}
+
+	\vspace{0.5cm}
+	\center{\textbf{\Large{Solution}}
+	\vspace{0.5cm}
+	\begin{flushleft}
+	The proposed solution is based on a DCEL representation. With it we will represent the $n$-vertex polygon by a set of 		$HalfEdges$, $Vertices$ and $Faces$. Each HalfEdge stores the information of the origin vertex, the twin, next and previous 		HalfEdges, and the face in which it is contained, as well as a tag for it.\\
+	\vspace{0.2cm}
+	With all this information we generate the algorithm, which is based on finding the outer edge closest to the point to build based on it the new triangle that will "enlarge" the polygon.\\
+	\vspace{0.2cm}
+	A usefull "constant" we defined is that the Face 0 is always the outer face of the polygon.\\
+	\vspace{0.2cm}
+	To calculate that nearest edge we have used the function $GetDistanceFromLineSegment$, which has time complexity $O(n-1)$, with $n$ the number of vertices, since it goes through all the outer edges to find the nearest one to the new vertex, and thus build the new triangle. 
+	\end{flushleft}
+	\includegraphics[width=200px]{closestedge} 
+	\begin{flushleft}
+	Sometimes the function $GetDistanceFromLineSegment$ gives a draw between two edges, this case happens when the closest distance to the new vertex from these two edges is the same final vertex of the edge:
+	\end{flushleft}
+	\includegraphics[width=200px]{conflict} 
+	\begin{flushleft}
+	To solve this conflict, we use the function $GetDistanceFromLine$, that extend the edges to infinity, and calculate the closest distance between the point and the lines, and, in this case, we use the edge with the longest distance to the new vertex because in this case, the longest distance edge means that it is the most perpendicular edge.
+	\end{flushleft}
+	\includegraphics[width=200px]{conflictsolved} 
+	\begin{flushleft}
+	So, in this case we stay with the edge v2-v3 to add the new triangle.\\
+	\vspace{0.2cm}
+	When adding a new vertex then, since we know where to connect it, we have to create and update the values of the HalfEdges, Vertex and Faces associated to this new triangle, with time complexity $O(1)$. \\
+	\vspace{0.2cm}
+	Finally, the output is the set of vertices of the polygon in CCW order, which will take a complexity time of $O(n)$, with $n$ the number of vertices. We generate this output by just iterating between the n vertices that are in contact with the Face 0 (outer face)\\
+	
+	\vspace{0.2cm}
+	Therefore, our solution for each insertion the complexity is $O(n + 1)$ being n the number of vertices already inserted and the "+1" the new vertex to be inserted. And finally for a series of insertions of n vertices, we have a complexity equivalent to a summantion: $n(n+1)/2$, giving a total complexity of  $O(n^2)$
+	\end{flushleft}
+
+	\vspace{0.5cm}
+	\center{\textbf{\Large{Program}}
+	\vspace{0.5cm}
+	\begin{flushleft}
+	We have created a program in which to construct, and at the same time visualise, the polygon with this algorithm.\\
+	\vspace{0.2cm}
+	To do so, we used a free and open-source web framework called Blazor that is being developed by Microsoft, in where we can construct web apps. In our case we used the Blazor WebAssembly using the programming language C\# to construct the algorithm, and, HTML5, CSS and javascript to build the UI. The special area in where we make the drawing of the polygon is a HTML5 canvas element.\\
+	\vspace{0.2cm}
+	We have generated an interface using the HTML canvas element in which we can vary the size of the plane ($M$), we can add vertices, either by clicking on the plane 		or by adding their coordinates. In addition to visualising the polygon, we can visualise the data that the DCEL is going to s	tore, as well as the output solution requested, the vertices ordered according to CCW.\\
+	\vspace{0.2cm}
+	It is considered that the inserted vertices will always be inserted correctly, i.e. outside the polygon generated so far, or on the outer edges.  In one of the cases, a cut in the polygon is generated by adding a new vertex, but this case is not covered by our algorithm (see example2). In the rest of the cases, by inserting correct vertices, we obtain the expected solution.
+	\end{flushleft}
+	\newpage
+	\vspace{0.5cm}
+	\center{\textbf{\Large{Where is the code?}}
+	\vspace{0.5cm}
+	\begin{flushleft}
+	You can find the code in github in here: \url{https://github.com/YosbiAlves/TAA}
+	\end{flushleft}
+	\vspace{0.5cm}
+	\center{\textbf{\Large{How to run}}
+	\vspace{0.5cm}
+	\begin{flushleft}
+		In order to run the program you need to have installed Visual Studio 2019. Open the solution (DCEL.sln) with the Visual Studio and push the play button to run the web-app. \\
+		\vspace{0.2cm}
+		We tested and develop the app using Windows 10 and MacOS BigSur.
+	\end{flushleft}
+	\includegraphics[width=\textwidth]{howtorun} 
+	\begin{flushleft}
+	You can run it in linux too but it requires a more elaborated configuration since you have to use Visual Studio Code, you can find how to configure the environment  in linux by following the steps on this website: \url{https://dev.to/rineshpk/blazor-server-crud-app-using-visual-studio-code-2b2g#:~:text=Blazor%20is%20a%20new%20Microsoft,C%23%2C%20HTML%2C%20and%20CSS.}
+	\end{flushleft}
+ 	\newpage
+
+	\vspace{0.5cm}
+	\center{\textbf{\Large{Examples}}
+	\vspace{0.5cm}
+	
+	\begin{flushleft}
+	{\textbf{Example 1:}} Here we have an example of how does the program work.
+	\end{flushleft}
+	\vspace{0.5cm}
+	\includegraphics[width=\textwidth]{ejemplo} 
+	\includegraphics[width=\textwidth]{ejemplo1}
+	\newpage
+
+	
+	\begin{flushleft}
+	{\textbf{Example 2:}} Here we have the exception mentioned above.
+	\end{flushleft}
+	\vspace{0.5cm}
+	\includegraphics[width=\textwidth]{excepcion2}\\
+	\includegraphics[width=\textwidth]{excepcion21}\\
+	\includegraphics[width=\textwidth]{excepcion22}
+	\includegraphics[width=\textwidth]{excepcion23}
+	\newpage
+	
+
+	\vspace{0.5cm}
+	\center{\textbf{\Large{References}}}
+	\vspace{0.5cm}
+	\begin{flushleft}
+		\begin{itemize}
+			\item Minimum distance from a point to the line segment using Vectors, in \url{https://www.geeksforgeeks.org/minimum-distance-from-a-point-to-the-line-segment-using-vectors/}
+			\item Distance from a point to a line, in \url{https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points}
+			\item Doubly Connect Edge List (DCEL), in \url{https://www2.cs.sfu.ca/~binay/813.2011/DCEL.pdf}
+			\item Plane Graphs and the DCEL, in \url{https://www.ti.inf.ethz.ch/ew/courses/CG12/lecture/Chapter%205.pdf}
+			
+		\end{itemize}
+	\end{flushleft}
+\end{document}
