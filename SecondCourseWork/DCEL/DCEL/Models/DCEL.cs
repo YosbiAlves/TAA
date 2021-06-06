@@ -31,11 +31,13 @@ namespace DCEL.Models
         public void Add(Vertex vertex)
         {
             Console.Write("going to add vertex");
+            bool bAddVertex = true;
+
             vertex.Tag = Vertices.Count;
 
             if (Vertices.Count == 1)
             {
-                AddSecondVertex(vertex);
+               AddSecondVertex(vertex);
             }
             else if (Vertices.Count == 2)
             {
@@ -43,10 +45,11 @@ namespace DCEL.Models
             }
             else if (Vertices.Count > 2)
             {
-                AddAnotherVertex(vertex);
+                bAddVertex = AddAnotherVertex(vertex);
             }
 
-            Vertices.Add(vertex);
+            if (bAddVertex == true)
+                Vertices.Add(vertex);
         }
 
 
@@ -202,8 +205,9 @@ namespace DCEL.Models
         //       the same distance of the new vertex (se tech report for more
         //       details on this)
         //----------------------------------------------------------------------
-        private void AddAnotherVertex(Vertex vertex)
+        private bool AddAnotherVertex(Vertex vertex)
         {
+          
             List<HalfEdge> externalEdges = new List<HalfEdge>();
             GetBorderEdges(Faces[0], externalEdges);
 
@@ -238,13 +242,19 @@ namespace DCEL.Models
                             shortestDistance = distance;
                             closest = edge;
                         }
-                        
                     }
 
                 }
             }
 
+            if (Vertex.IsTurningRight(closest.Origin, closest.Next.Origin, vertex))
+            {
+                return false;
+            }
+
             AddAVertex(closest, vertex);
+
+            return true;
         }
 
         //----------------------------------------------------------------------
