@@ -10,6 +10,11 @@ namespace DCEL.Models
         public readonly List<Face>      Faces;
         public readonly List<HalfEdge>  HalfEdges;
 
+
+        //----------------------------------------------------------------------
+        // Name: DCEL
+        // Desc: Constructor
+        //----------------------------------------------------------------------
         public DCEL()
         {
             Vertices    = new List<Vertex>();
@@ -17,6 +22,12 @@ namespace DCEL.Models
             HalfEdges   = new List<HalfEdge>();
         }
 
+        //----------------------------------------------------------------------
+        // Name: Add (vertex)
+        // Desc: Adds a vertex to the DCEL, it takes in account whether if the
+        //       DCEL has no vertices, has two vertices or has more than 2
+        //       vertices to decide what to do next
+        //----------------------------------------------------------------------
         public void Add(Vertex vertex)
         {
             Console.Write("going to add vertex");
@@ -38,6 +49,13 @@ namespace DCEL.Models
             Vertices.Add(vertex);
         }
 
+
+        //----------------------------------------------------------------------
+        // Name: AddSecondVertex
+        // Desc: Adds a second vertex to the DCEL, it also creates the first
+        //       face, that is face 0 that is ALWAYS the external face to the
+        //       polygon
+        //----------------------------------------------------------------------
         private void AddSecondVertex(Vertex vertex)
         {
             HalfEdge halfEdge1 = new HalfEdge();
@@ -65,7 +83,14 @@ namespace DCEL.Models
             Add(halfEdge1, halfEdge2);
             Add(firstFace);
         }
-        
+
+        //----------------------------------------------------------------------
+        // Name: AddThirdVertex
+        // Desc: Adds a third vertex to the polygon to form the first triangle,
+        //       it is important to denote that it does a turn test to know the
+        //       positions of vertex1 and vertex2 with respect to vertex3 to
+        //       make the changes in the half edges correctly
+        //----------------------------------------------------------------------
         private void AddThirdVertex(Vertex vertex3)
         {
             Vertex vertex1 = Vertices[0];
@@ -167,6 +192,16 @@ namespace DCEL.Models
             Add(face);
         }
 
+        //----------------------------------------------------------------------
+        // Name: AddAnotherVertex
+        // Desc: Adds the n-th vertex (after the third vertex), this function
+        //       selects the edge to be added the new vertex (the new triangle).
+        //       It iterates between the edges that are in contact with the outer
+        //       face (face 0) and test the distances between the vertex and the
+        //       edges, it also do the conflict resolution when two edges are at
+        //       the same distance of the new vertex (se tech report for more
+        //       details on this)
+        //----------------------------------------------------------------------
         private void AddAnotherVertex(Vertex vertex)
         {
             List<HalfEdge> externalEdges = new List<HalfEdge>();
@@ -212,6 +247,13 @@ namespace DCEL.Models
             AddAVertex(closest, vertex);
         }
 
+        //----------------------------------------------------------------------
+        // Name: AddAVertex
+        // Desc: This function is to be called after AddAnotherVertex (after we
+        //       have the edge to be inserted the new triangle). It inserts the
+        //       new face and edges, and also modify the existing edges in
+        //       conformity with the DCEL data structure
+        //----------------------------------------------------------------------
         private void AddAVertex(HalfEdge halfEdge0, Vertex vertex3)
         {
 
@@ -267,6 +309,10 @@ namespace DCEL.Models
 
         }
 
+        //----------------------------------------------------------------------
+        // Name: Add (face)
+        // Desc: Adds a new face
+        //----------------------------------------------------------------------
         public void Add(Face face)
         {
             Debug.Assert(face != null);
@@ -275,6 +321,10 @@ namespace DCEL.Models
             Faces.Add(face);
         }
 
+        //----------------------------------------------------------------------
+        // Name: Add (edge)
+        // Desc: Adds a new edge
+        //----------------------------------------------------------------------
         public void Add(HalfEdge edge1, HalfEdge edge2)
         {
             Debug.Assert(edge1 != null);
@@ -290,6 +340,10 @@ namespace DCEL.Models
             HalfEdges.Add(edge2);
         }
 
+        //----------------------------------------------------------------------
+        // Name: GetBorderEdges
+        // Desc: Returns the border edges of a face in the DCEL
+        //----------------------------------------------------------------------
         public void GetBorderEdges(Face face, ICollection<HalfEdge> borderEdges)
         {
             HalfEdge current = face.Edge;
@@ -299,6 +353,10 @@ namespace DCEL.Models
             } while ((current = current.Next) != face.Edge);
         }
 
+        //----------------------------------------------------------------------
+        // Name: GetCCWComposingVertices
+        // Desc: Returns a list of vertices of the polygon in CCW order
+        //----------------------------------------------------------------------
         public List<Vertex> GetCCWComposingVertices()
 		{
             
@@ -316,8 +374,6 @@ namespace DCEL.Models
             }
             
             return vertices;
-            
-            
 		}
     }
 }

@@ -9,16 +9,29 @@ namespace DCEL.Models
         public int Y;
         public double Angle;
 
+        //----------------------------------------------------------------------
+        // Name: Vertex
+        // Desc: Constructor
+        //----------------------------------------------------------------------
         public Vertex(int x, int y)
         {
             (X, Y, Angle) = (x, y, 0);
         }
 
+        //----------------------------------------------------------------------
+        // Name: Substract
+        // Desc: Substract the components of one vertex with another vertex
+        //----------------------------------------------------------------------
         public Vertex Substract(Vertex p)
         {
             return new Vertex(this.X - p.X, this.Y - p.Y);
         }
 
+        //----------------------------------------------------------------------
+        // Name: GetDistanceFromLine
+        // Desc: Measures the distance between a point and a "infinite" line
+        //       conformed by two points
+        //----------------------------------------------------------------------
         public static double GetDistanceFromLine(Vertex linePoint1, Vertex linePoint2, Vertex point)
         {
             double numerator = ((linePoint2.X - linePoint1.X) * (linePoint1.Y - point.Y)) - ((linePoint1.X - point.X) * (linePoint2.Y - linePoint1.Y));
@@ -33,7 +46,11 @@ namespace DCEL.Models
         }
 
 
-        // code from https://www.geeksforgeeks.org/minimum-distance-from-a-point-to-the-line-segment-using-vectors/
+        //----------------------------------------------------------------------
+        // Name: GetDistanceFromLineSegment
+        // Desc: Measures the distance between a point and a line segment
+        // Code taken from: https://www.geeksforgeeks.org/minimum-distance-from-a-point-to-the-line-segment-using-vectors/
+        //----------------------------------------------------------------------
         public static double GetDistanceFromLineSegment(Vertex A, Vertex  B, Vertex E)
         {
             // vector AB
@@ -88,31 +105,60 @@ namespace DCEL.Models
             return reqAns;
         }
 
+        //----------------------------------------------------------------------
+        // Name: GetDistance
+        // Desc: Dot product between two points (vertices)
+        //----------------------------------------------------------------------
         public static double GetDistance(Vertex p1, Vertex p2)
         {
             return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
         }
 
+        //----------------------------------------------------------------------
+        // Name: CrossProduct
+        // Desc: Cross product between two points (vertices)
+        //----------------------------------------------------------------------
         public static int CrossProduct(Vertex p1, Vertex p2)
         {
             return p1.X * p2.Y - p2.X * p1.Y;
         }
 
+        //----------------------------------------------------------------------
+        // Name: GetDirection
+        // Desc: Gets the direction of turning between three vertices, if it
+        //       returns = 0, the direction is colinear, if it is < 0 it is a
+        //       left turn, and if it is > 0 it is a right turn
+        //----------------------------------------------------------------------
         public static int GetDirection(Vertex p1, Vertex p2, Vertex p3)
         {
             return CrossProduct(p3.Substract(p1), p2.Substract(p1));
         }
 
+        //----------------------------------------------------------------------
+        // Name: IsTurningLeft
+        // Desc: Returns true the direction of turning between three vertices,
+        //       is left
+        //----------------------------------------------------------------------
         public static bool IsTurningLeft(Vertex p1, Vertex p2, Vertex p3)
         {
             return GetDirection(p1, p2, p3) < 0;
         }
 
+        //----------------------------------------------------------------------
+        // Name: IsTurningRight
+        // Desc: Returns true the direction of turning between three vertices,
+        //       is right
+        //----------------------------------------------------------------------
         public static bool IsTurningRight(Vertex p1, Vertex p2, Vertex p3)
         {
             return GetDirection(p1, p2, p3) > 0;
         }
 
+        //----------------------------------------------------------------------
+        // Name: IsCollinear
+        // Desc: Returns true the direction of turning between three vertices,
+        //       is collinear
+        //----------------------------------------------------------------------
         public static bool IsCollinear(Vertex p1, Vertex p2, Vertex p3)
         {
             return GetDirection(p1, p2, p3) == 0;

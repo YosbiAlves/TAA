@@ -10,6 +10,10 @@ namespace DCEL.Models
         public HalfEdge Prev;
         public Face IncidentFace;
 
+        //----------------------------------------------------------------------
+        // Name: HalfEdge
+        // Desc: Constructor
+        //----------------------------------------------------------------------
         public HalfEdge()
         {
             Origin = null;

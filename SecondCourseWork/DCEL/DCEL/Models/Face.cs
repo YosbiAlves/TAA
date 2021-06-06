@@ -10,6 +10,10 @@ namespace DCEL.Models
         public HalfEdge Edge;
         public int Tag;
 
+        //----------------------------------------------------------------------
+        // Name: Face
+        // Desc: Constructor
+        //----------------------------------------------------------------------
         public Face()
         {
             Edge = null;

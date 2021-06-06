@@ -250,6 +250,11 @@
     private Canvas2DContext ctx;
     protected BECanvasComponent _canvasReference;
 
+    //----------------------------------------------------------------------
+    // Name: OnAfterRenderAsync
+    // Desc: function called after the rendering of the page, used as a
+    //       constructor
+    //----------------------------------------------------------------------
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this.ctx = await _canvasReference.CreateCanvas2DAsync();
@@ -258,11 +263,19 @@
         await base.OnInitializedAsync();
     }
 
+    //----------------------------------------------------------------------
+    // Name: ResetClick
+    // Desc: Function called from the button of "reset"
+    //----------------------------------------------------------------------
     private void ResetClick()
     {
         Field = new Models.Field();
     }
 
+    //----------------------------------------------------------------------
+    // Name: ResizeClick
+    // Desc: Function called from the button of "resize"
+    //----------------------------------------------------------------------
     private void ResizeClick()
     {
         if (tempM > 1500) tempM = 1500;
@@ -272,6 +285,10 @@
         Field = new Models.Field();
     }
 
+    //----------------------------------------------------------------------
+    // Name: AddOnePointClick
+    // Desc: Function called from the button of "add one vertex"
+    //----------------------------------------------------------------------
     private void AddOnePointClick()
     {
 
@@ -286,12 +303,22 @@
 
     private DateTime LastRender;
 
+    //----------------------------------------------------------------------
+    // Name: UpdateTable
+    // Desc: Each time a point is inserted, we need to call to StateHasChanged
+    //       to refresh the tables of DCEL and CCW after a vertex has been
+    //       inserted
+    //----------------------------------------------------------------------
     [JSInvokable]
     public void UpdateTable()
     {
         StateHasChanged();
     }
 
+    //----------------------------------------------------------------------
+    // Name: ResizeInBlazor
+    // Desc: Called when the canvas is resized
+    //----------------------------------------------------------------------
     [JSInvokable]
     public void ResizeInBlazor(double width, double height)
     {
@@ -299,6 +326,11 @@
         Field.Resize(M, M);
     }
 
+    //----------------------------------------------------------------------
+    // Name: AddOnePoint
+    // Desc: Function called on mouse click, with the position of the mouse
+    //       click on the canvas
+    //----------------------------------------------------------------------
     [JSInvokable]
     public void AddOnePoint(double x, double y)
     {
@@ -306,7 +338,10 @@
         RenderInBlazor();
     }
 
-
+    //----------------------------------------------------------------------
+    // Name: RenderInBlazor
+    // Desc: Renders the canvas (the graphic)
+    //----------------------------------------------------------------------
     [JSInvokable]
     public void RenderInBlazor()
     {
