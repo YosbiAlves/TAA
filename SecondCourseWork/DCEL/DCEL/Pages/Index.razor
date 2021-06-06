@@ -334,7 +334,7 @@
     [JSInvokable]
     public void AddOnePoint(double x, double y)
     {
-        Field.AddVertex((int)x, ((int)y - 600) * -1);
+        Field.AddVertex((int)x, ((int)y - M) * -1);
         RenderInBlazor();
     }
 
@@ -378,8 +378,8 @@
                         this.ctx.SetStrokeStyleAsync("#FF0000");
                         this.ctx.SetLineWidthAsync(1);
                     }
-                    this.ctx.MoveToAsync(edge.Origin.X, (edge.Origin.Y - 600) * -1);
-                    this.ctx.LineToAsync(edge.Next.Origin.X, (edge.Next.Origin.Y - 600) * -1);
+                    this.ctx.MoveToAsync(edge.Origin.X, (edge.Origin.Y - M) * -1);
+                    this.ctx.LineToAsync(edge.Next.Origin.X, (edge.Next.Origin.Y - M) * -1);
 
                     this.ctx.StrokeAsync();
                 }
@@ -389,14 +389,14 @@
         foreach (var vertex in Field.DCEL.Vertices)
         {
             this.ctx.BeginPathAsync();
-            this.ctx.ArcAsync(vertex.X, (vertex.Y - 600) * -1, 2, 0, 2 * Math.PI, false);
+            this.ctx.ArcAsync(vertex.X, (vertex.Y - M) * -1, 2, 0, 2 * Math.PI, false);
             this.ctx.SetFillStyleAsync("#000000");
             this.ctx.FillAsync();
             this.ctx.StrokeAsync();
 
             this.ctx.SetFontAsync("14px Segoe UI");
             this.ctx.SetFillStyleAsync("#0000FF");
-            this.ctx.FillTextAsync("v" + vertex.Tag, vertex.X + 4, ((vertex.Y - 600) * -1) + 4);
+            this.ctx.FillTextAsync("v" + vertex.Tag, vertex.X + 4, ((vertex.Y - M) * -1) + 4);
         }
 
         this.ctx.EndBatchAsync();
